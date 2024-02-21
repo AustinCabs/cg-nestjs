@@ -3,9 +3,20 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TodoModule } from './todo/todo.module';
 import { EventModule } from './event/event.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Event } from './event/entities/event.entity';
 
 @Module({
-  imports: [TodoModule, EventModule],
+  imports: [TypeOrmModule.forRoot({
+    type:'mysql',
+    host: 'localhost',
+    port: 3306,
+    username:'root',
+    password:'root',
+    database:'cgtraining',
+    entities: [Event],
+    synchronize: true
+  }),TodoModule, EventModule],
   controllers: [AppController],
   providers: [AppService],
 })
