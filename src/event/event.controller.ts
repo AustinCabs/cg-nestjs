@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { EventService } from './event.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
@@ -15,18 +15,24 @@ export class EventController {
   ) { }
 
   @Post()
-  create(@Body() createEventDto: CreateEventDto) {
-    // return this.eventService.create(createEventDto);
+  async create(@Body() createEventDto: CreateEventDto) {
+    const {name,description,when,address} = createEventDto
+    const newEvent = await this.repository.create({name,description,when,address})
+    return this.repository.save(newEvent)
   }
 
   @Get()
-  findAll() {
-    return "powert!"
+  async findAll() {
+    return this.repository.find()
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    // return this.eventService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.repository.find({
+      where: {
+        id
+      }
+    })
   }
 
   @Patch(':id')
