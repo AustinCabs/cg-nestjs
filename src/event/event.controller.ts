@@ -60,11 +60,9 @@ export class EventController {
       this.logger.debug(`Update event`)
       const updatedEvent = await this.repository.save(mergeEvent)
       console.log(updatedEvent);
-      // return updatedEvent
       return {
         message: "Succesfully updated"
       }
-
     } catch (error) {
       this.logger.debug(`Catch Update`)
       throw new BadRequestException('Failed update')
@@ -81,13 +79,18 @@ export class EventController {
     })
     this.logger.debug(`find event: ${typeof findEvent} | ${JSON.stringify(findEvent)}`)
 
-    if (findEvent === null) {
+    if (!findEvent) {
       throw new NotFoundException('Event not Found')
     }
     try {
-      
+      const deleteEvent = this.repository.delete(id)
+      this.logger.log(`Delete Event ${JSON.stringify(deleteEvent)}`)
+      return {
+        message: "Succesfully Deleted!"
+      }
     } catch (error) {
-      
+      this.logger.debug(`Catch delete`)
+      throw new BadRequestException('Failed delete')
     }
   }
 }
