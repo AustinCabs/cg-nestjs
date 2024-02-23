@@ -5,23 +5,22 @@ import { TodoModule } from './todo/todo.module';
 import { EventModule } from './event/event.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Event } from './event/entities/event.entity';
-import { EventController } from './event/event.controller';
+import { ConfigModule } from '@nestjs/config';
+import typeOrmConfig from './config/typeOrm.config';
 
 @Module({
-  imports: [TypeOrmModule.forRoot({
-    type: 'mysql',
-    host: 'localhost',
-    port: 3306,
-    username: 'root',
-    password: '1234', //orginal = root because i change it using local mysql
-    database: 'cgtraining',
-    entities: [Event],
-    synchronize: true
-  }),
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal:true,
+      load: [typeOrmConfig]
+    })
+    ,TypeOrmModule.forRootAsync({
+      useFactory:typeOrmConfig
+    }),
   TypeOrmModule.forFeature([Event]),
     TodoModule,
     EventModule],
-  controllers: [AppController, EventController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule { }
