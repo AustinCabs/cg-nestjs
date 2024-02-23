@@ -13,7 +13,7 @@ import { EventController } from './event/event.controller';
     host: 'localhost',
     port: 3306,
     username: 'root',
-    password: 'root',
+    password: '1234', //orginal = root because i change it using local mysql
     database: 'cgtraining',
     entities: [Event],
     synchronize: true
