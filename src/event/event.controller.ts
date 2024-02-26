@@ -1,12 +1,12 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, HttpCode, UsePipes, ValidationPipe, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
-import { EventService } from './event.service';
+// import { EventService } from './event.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { Repository } from 'typeorm';
 import { Event } from './entities/event.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
-@Controller('event')
+@Controller('events')
 export class EventController {
   // private readonly eventService: EventService,
   private readonly logger = new Logger(EventController.name)
@@ -15,6 +15,24 @@ export class EventController {
     private readonly repository: Repository<Event>
   ) { }
 
+  // @Get()
+  // async findAll() {
+  //   return this.repository.find()
+  // }
+
+  // @Get()
+  @Get('practice')
+  async practice2Date() {
+    return await this.repository.findOne(
+      {
+        where: {
+          id: 1
+        },
+        relations: ['attendees']
+      },
+    );
+  }
+
   @Post()
   async create(@Body() createEventDto: CreateEventDto) {
     const { name, description, when, address } = createEventDto
@@ -22,10 +40,6 @@ export class EventController {
     return this.repository.save(newEvent)
   }
 
-  @Get()
-  async findAll() {
-    return this.repository.find()
-  }
 
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
@@ -55,7 +69,7 @@ export class EventController {
       this.logger.debug(`Merge event`)
       const mergeEvent = await this.repository.merge(findEvent, updateEventDto)
       console.log(mergeEvent);
-      
+
 
       this.logger.debug(`Update event`)
       const updatedEvent = await this.repository.save(mergeEvent)
@@ -93,4 +107,5 @@ export class EventController {
       throw new BadRequestException('Failed delete')
     }
   }
+
 }
